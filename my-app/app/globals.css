@@ -1,0 +1,130 @@
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+html,
+body {
+  min-height: 100%;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img[alt="small"] {
+  max-width: 500px;
+}
+
+img[alt="medium"] {
+  max-width: 700px;
+}
+
+img[alt="large"] {
+  max-width: 900px;
+}
+
+/* 코드 블럭 */
+pre {
+  position: relative;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #e2e8f0;
+  padding: 20px 24px;
+  border-radius: 18px;
+  overflow-x: auto;
+  margin: 28px 185px 15px 0px;
+  font-size: 15px;
+  line-height: 1.7;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  /* 트렌디한 느낌 */
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  backdrop-filter: blur(12px);
+}
+
+/* 상단 헤더 느낌 */
+pre::before {
+  content: "SQL";
+  position: absolute;
+  top: 12px;
+  left: 18px;
+
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+/* Mac 스타일 버튼 */
+pre::after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 70px;
+
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+
+  background: #ff5f56;
+  box-shadow:
+    16px 0 #ffbd2e,
+    32px 0 #27c93f;
+}
+
+/* 실제 코드 영역 */
+pre code {
+  display: block;
+  margin-top: 18px;
+
+  background: transparent;
+  color: inherit;
+  padding: 0;
+
+  font-family:
+    "JetBrains Mono",
+    "Fira Code",
+    Consolas,
+    monospace;
+
+  font-size: 14px;
+}
+
+/* inline code */
+code {
+  background: rgba(99, 102, 241, 0.12);
+  color: #6366f1;
+
+  padding: 3px 8px;
+  border-radius: 8px;
+
+  font-size: 0.92em;
+  font-weight: 500;
+}
+
+/* 스크롤바 */
+pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+pre::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
+}
+
+pre::-webkit-scrollbar-track {
+  background: transparent;
+}
