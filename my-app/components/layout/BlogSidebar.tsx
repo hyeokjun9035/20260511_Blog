@@ -13,8 +13,8 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
-import { GithubIcon, MailIcon } from "./BlogIcons";
-import { profile, skills } from "../data/profile";
+import { GithubIcon, MailIcon } from "../common/BlogIcons";
+import { profile, skills } from "../../data/profile";
 
 export default function BlogSidebar() {
   return (
@@ -116,7 +116,7 @@ export default function BlogSidebar() {
         <Box>
           <Typography
             component={Link}
-            href="/About"
+            href="/about"
             variant="h6"
             sx={{ display: "inline-block", mb: 1, fontWeight: 800 }}
           >
@@ -127,7 +127,7 @@ export default function BlogSidebar() {
         <Box>
           <Typography
             component={Link}
-            href="/Troubleshooting"
+            href="/troubleshooting"
             variant="h6"
             sx={{ display: "inline-block", mb: 1, fontWeight: 800 }}
           >
@@ -138,7 +138,7 @@ export default function BlogSidebar() {
               <ListItem key={item} disablePadding>
                 <ListItemButton
                   component={Link}
-                  href={`/Troubleshooting#${item.toLowerCase()}`}
+                  href={`/troubleshooting#${item.toLowerCase()}`}
                   sx={{ borderRadius: 2, px: 1.25, py: 0.4 }}
                 >
                   <Typography variant="body2" color="text.secondary">
@@ -153,7 +153,7 @@ export default function BlogSidebar() {
         <Box>
           <Typography
             component={Link}
-            href="/Skill"
+            href="/skill"
             variant="h6"
             sx={{ display: "inline-block", mb: 1.5, fontWeight: 800 }}
           >

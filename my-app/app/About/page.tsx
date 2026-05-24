@@ -8,9 +8,9 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import AboutSectionMenu from "../components/AboutSectionMenu";
-import BlogLayout from "../components/BlogLayout";
-import { education, profile, projects } from "../data/profile";
+import AboutSectionMenu from "../../components/about/AboutSectionMenu";
+import BlogLayout from "../../components/layout/BlogLayout";
+import { education, profile, projects } from "../../data/profile";
 
 export default function AboutPage() {
   return (

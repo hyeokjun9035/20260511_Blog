@@ -3,8 +3,8 @@
 import { IconButton, Menu, MenuItem, Box } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
-import { MenuIcon } from "./BlogIcons";
-import { aboutSections } from "../data/profile";
+import { MenuIcon } from "../common/BlogIcons";
+import { aboutSections } from "../../data/profile";
 
 export default function AboutSectionMenu() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

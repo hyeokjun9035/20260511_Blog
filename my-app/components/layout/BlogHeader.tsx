@@ -15,8 +15,8 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useState, useRef } from "react";
-import { ChevronDownIcon, SearchIcon } from "./BlogIcons";
-import { pageLinks } from "../data/profile";
+import { ChevronDownIcon, SearchIcon } from "../common/BlogIcons";
+import { pageLinks } from "../../data/profile";
 
 type BlogHeaderProps = {
   title: string[];

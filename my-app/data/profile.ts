@@ -16,9 +16,9 @@ export const profile = {
 };
 
 export const pageLinks = [
-  { label: "About", href: "/About" },
-  { label: "TroubleShooting", href: "/Troubleshooting" },
-  { label: "Skill", href: "/Skill" },
+  { label: "About", href: "/about" },
+  { label: "TroubleShooting", href: "/troubleshooting" },
+  { label: "Skill", href: "/skill" },
 ];
 
 export const skills = ["Java", "Spring", "React", "Next.js", "TypeScript", "Vue.js", "Oracle"];

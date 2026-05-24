@@ -10,8 +10,8 @@ import {
   Button,
 } from "@mui/material";
 import Link from "next/link";
-import BlogLayout from "../components/BlogLayout";
-import { skills, latestPosts } from "../data/profile";
+import BlogLayout from "../../components/layout/BlogLayout";
+import { skills, latestPosts } from "../../data/profile";
 
 export default function SkillPage() {
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);

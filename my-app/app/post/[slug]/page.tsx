@@ -2,9 +2,9 @@ import { Box, Button, Chip, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
-import BlogLayout from "../../components/BlogLayout";
-import AboutSectionMenu from "../../components/AboutSectionMenu";
-import { getPostBySlug, getPostSlugs } from "../../lib/posts";
+import BlogLayout from "../../../components/layout/BlogLayout";
+import AboutSectionMenu from "../../../components/about/AboutSectionMenu";
+import { getPostBySlug, getPostSlugs } from "../../../lib/posts";
 
 // 정적 경로 생성
 export function generateStaticParams() {

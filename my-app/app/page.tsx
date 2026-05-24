@@ -8,9 +8,9 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import BlogLayout from "./components/BlogLayout";
+import BlogLayout from "../components/layout/BlogLayout";
 import Link from "next/link";
-import { latestPosts } from "./data/profile";
+import { latestPosts } from "../data/profile";
 
 export default function DevBlogMain() {
   return (

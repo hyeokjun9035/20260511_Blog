@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { Box, Button, Chip, Stack, Typography } from "@mui/material";
-import BlogLayout from "../components/BlogLayout";
+import BlogLayout from "../../components/layout/BlogLayout";
 import Link from "next/link";
-import { troubleshootingTopics, troubleshootingPosts } from "../data/profile";
+import { troubleshootingTopics, troubleshootingPosts } from "../../data/profile";
 
 export default function TroubleShootingPage() {
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
