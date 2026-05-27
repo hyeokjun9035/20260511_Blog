@@ -21,7 +21,11 @@ export default function AdminLayout({ title = ["Admin"], children }: AdminLayout
         }}
       >
         <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 900 }}>
+          <Typography
+            component={Link}
+            href="/admin"
+            variant="h6"
+            sx={{ fontWeight: 900 }}>
             관리자
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -33,10 +37,10 @@ export default function AdminLayout({ title = ["Admin"], children }: AdminLayout
             <ListItemText primary="대시보드" />
           </ListItemButton>
           <ListItemButton component={Link} href="/admin/posts">
-            <ListItemText primary="게시물 관리" />
+            <ListItemText primary="게시글 관리" />
           </ListItemButton>
           <ListItemButton component={Link} href="/admin/posts/new">
-            <ListItemText primary="새 게시물" />
+            <ListItemText primary="게시글 작성" />
           </ListItemButton>
           <ListItemButton component={Link} href="/admin/login">
             <ListItemText primary="로그아웃" />

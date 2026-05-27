@@ -1,3 +1,4 @@
+"use client"
 import {
   Box,
   Button,
@@ -36,12 +37,9 @@ export default function AdminPage() {
               구분되는 관리자 전용 UI를 제공합니다.
             </Typography>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mt: 4 }}>
-              <Link href="/admin/login" style={{ textDecoration: "none" }}>
-                <Button variant="contained" color="inherit" sx={{ bgcolor: "black", color: "white" }}>
-                  관리자 로그인
-                </Button>
+              <Link href="/admin/posts/new" style={{ textDecoration: "none" }}>
+                <Button variant="outlined">게시글 작성</Button>
               </Link>
-              <Button variant="outlined">게시글 작성</Button>
             </Stack>
           </CardContent>
         </Card>
@@ -94,52 +92,6 @@ export default function AdminPage() {
           ))}
         </Box>
 
-        <Card sx={{ p: 3, borderRadius: 5, boxShadow: 3 }}>
-          <CardContent sx={{ p: 3 }}>
-            <Stack direction="row" sx={{ alignItems: "center", justifyContent: "space-between", mb: 2 }}>
-              <Typography variant="h5" sx={{ fontWeight: 900 }}>
-                빠른 작업
-              </Typography>
-              <Button variant="contained" color="inherit" sx={{ bgcolor: "black", color: "white" }}>
-                관리 페이지로 이동
-              </Button>
-            </Stack>
-            <Box
-              sx={{
-                display: "grid",
-                gap: 2,
-                gridTemplateColumns: { xs: "1fr", sm: "repeat(3, minmax(0, 1fr))" },
-              }}
-            >
-              {[
-                { label: "새 게시물 작성", link: "/admin/posts/new" },
-                { label: "게시물 목록", link: "/admin/posts" },
-                { label: "댓글 관리", link: "/admin/comments" },
-              ].map((item) => (
-                <Button
-                  key={item.label}
-                  fullWidth
-                  variant="outlined"
-                  sx={{
-                    height: 120,
-                    textTransform: "none",
-                    justifyContent: "flex-start",
-                    display: "flex",
-                    alignItems: "flex-start",
-                    p: 3,
-                  }}
-                >
-                  <Box>
-                    <Typography sx={{ fontWeight: 700 }}>{item.label}</Typography>
-                    <Typography color="text.secondary" sx={{ mt: 1 }}>
-                      {item.link}
-                    </Typography>
-                  </Box>
-                </Button>
-              ))}
-            </Box>
-          </CardContent>
-        </Card>
       </Box>
     </AdminLayout>
   );
