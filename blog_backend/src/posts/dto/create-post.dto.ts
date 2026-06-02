@@ -1,6 +1,10 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength, IsInt } from 'class-validator'
+import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator'
 
 export class CreatePostDto {
+  @IsNotEmpty()
+  @IsInt()
+  category_id!: number
+
   @IsNotEmpty()
   @IsString()
   @MaxLength(200)

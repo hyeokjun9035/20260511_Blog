@@ -10,13 +10,15 @@ export class PostsController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  create(@Body() createPostDto: CreatePostDto, @Req() req: any) {
-    // If authenticated, set author_id from token
-    if (!createPostDto.author_id && req.user?.id) {
-      createPostDto.author_id = req.user.id
-    }
+  create(
+    @Body() createPostDto: CreatePostDto,
+    @Req() req: any
+  ) {
     console.log(createPostDto)
-    return this.postsService.create(createPostDto)
+    return this.postsService.create({
+      ...createPostDto,
+      author_id: req.user.id,
+    });
   }
 
   @Get()

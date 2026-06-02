@@ -39,6 +39,10 @@ import FormatQuoteIcon from "@mui/icons-material/FormatQuote"
 import TitleIcon from "@mui/icons-material/Title"
 
 const categories = ["troubleshooting", "skill"]
+const categoryMap: Record<string, number> = {
+    troubleshooting: 1,
+    skill: 2,
+}
 
 const fontFamilies = [
     {
@@ -146,44 +150,89 @@ export default function AdminCreatePostPage() {
         },
     })
 
+    const uploadImage = async (
+        file: File,
+    ) => {
+        const formData =
+            new FormData();
+
+        formData.append(
+            "file",
+            file,
+        );
+
+        const token =
+            getCookie("token");
+
+        const response =
+            await fetch(
+                "http://localhost:4000/upload/image",
+                {
+                    method: "POST",
+
+                    headers: {
+                        ...(token
+                            ? {
+                                Authorization:
+                                    `Bearer ${token}`,
+                            }
+                            : {}),
+                    },
+
+                    body: formData,
+                },
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                "이미지 업로드 실패",
+            );
+        }
+
+        return response.json();
+    };
+
     const addImage = () => {
         const input =
             document.createElement(
-                "input"
-            )
+                "input",
+            );
 
-        input.type = "file"
-        input.accept = "image/*"
+        input.type = "file";
+        input.accept = "image/*";
 
-        input.onchange = () => {
-            const file =
-                input.files?.[0]
+        input.onchange =
+            async () => {
+                const file =
+                    input.files?.[0];
 
-            if (!file) return
+                if (!file) return;
 
-            const reader =
-                new FileReader()
+                try {
+                    const result =
+                        await uploadImage(
+                            file,
+                        );
 
-            reader.onload = () => {
-                if (
-                    typeof reader.result ===
-                    "string"
-                ) {
                     editor
                         ?.chain()
                         .focus()
                         .setImage({
-                            src: reader.result,
+                            src:
+                                result.imageUrl,
                         })
-                        .run()
+                        .run();
+                } catch (error) {
+                    console.error(error);
+
+                    alert(
+                        "이미지 업로드 실패",
+                    );
                 }
-            }
+            };
 
-            reader.readAsDataURL(file)
-        }
-
-        input.click()
-    }
+        input.click();
+    };
 
     const addLink = () => {
         const url = window.prompt(
@@ -229,6 +278,7 @@ export default function AdminCreatePostPage() {
                     ...(token ? { Authorization: `Bearer ${token}` } : {}),
                 },
                 body: JSON.stringify({
+                    category_id: categoryMap[category],
                     title,
                     contents: content,
                     thumbnail: '',

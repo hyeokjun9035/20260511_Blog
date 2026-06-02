@@ -5,17 +5,20 @@ import { UpdatePostDto } from './dto/update-post.dto'
 
 @Injectable()
 export class PostsService {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(private readonly databaseService: DatabaseService) { }
 
   async create(createPostDto: CreatePostDto) {
     const result: any = await this.databaseService.execute(
-      'INSERT INTO posts (title, contents, thumbnail, author_id, view_count, like_count, is_public, is_deleted, created_at, updated_at) VALUES (?, ?, ?, ?, 0, 0, ?, 0, NOW(), NOW())',
+      'INSERT INTO posts '
+      + '(category_id, title, contents, thumbnail, author_id, view_count, like_count, is_public, is_deleted, created_at, updated_at) '
+      + 'VALUES (?, ?, ?, ?, ?, 0, 0, ?, 0, NOW(), NOW())',
       [
+        Number(createPostDto.category_id),
         createPostDto.title,
         createPostDto.contents,
         createPostDto.thumbnail ?? null,
-        createPostDto.author_id ?? null,
-        createPostDto.is_public ? 1 : 0,
+        createPostDto.author_id,
+        createPostDto.is_public ? 'Y' : 'N',
       ],
     )
 
@@ -29,7 +32,19 @@ export class PostsService {
 
   async findOne(id: number) {
     const rows: any = await this.databaseService.query(
-      'SELECT * FROM posts WHERE id = ?',
+      `
+    SELECT
+      p.*,
+      c.name AS category_name,
+      u.nickname
+    FROM posts p
+    LEFT JOIN categories c
+      ON p.category_id = c.id
+    LEFT JOIN users u
+      ON p.author_id = u.id
+    WHERE p.id = ?
+      AND p.is_deleted = 'N'
+    `,
       [id],
     )
     const post = rows[0]
