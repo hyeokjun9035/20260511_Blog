@@ -1,23 +1,25 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator'
+import { IsBoolean, IsInt, IsOptional, IsString, MaxLength } from 'class-validator'
 
 export class UpdatePostDto {
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
   @MaxLength(200)
   title?: string
 
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  content?: string
+  contents?: string
 
   @IsOptional()
   @IsString()
-  @MaxLength(100)
-  author?: string
+  @MaxLength(255)
+  thumbnail?: string
+
+  @IsOptional()
+  @IsInt()
+  author_id?: number
 
   @IsOptional()
   @IsBoolean()
-  published?: boolean
+  is_public?: boolean
 }

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import AdminLayout from "../../../../components/layout/AdminLayout"
 
@@ -201,21 +202,53 @@ export default function AdminCreatePostPage() {
             .run()
     }
 
-    const handleSubmit = (
-        event: React.FormEvent
-    ) => {
+    const router = useRouter()
+
+    const getCookie = (name: string) => {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
+        if (match) return match[2]
+        return null
+    }
+
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault()
 
-        const content =
-            editor?.getHTML()
+        const content = editor?.getHTML() || ''
 
-        console.log({
-            title,
-            category,
-            summary,
-            content,
-            published,
-        })
+        try {
+            const token = getCookie('token')
+
+            console.log("title :", title);
+            console.log("content :", content);
+            console.log("typeof :", typeof content);
+
+            const res = await fetch('http://localhost:4000/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                },
+                body: JSON.stringify({
+                    title,
+                    contents: content,
+                    thumbnail: '',
+                    author_id: null,
+                    is_public: published,
+                }),
+            })
+
+            if (!res.ok) {
+                const err = await res.json()
+                throw new Error(err.message || '게시글 등록에 실패했습니다.')
+            }
+
+            const data = await res.json()
+            // Redirect to admin page or to the new post page
+            router.push('/admin')
+        } catch (err: any) {
+            console.error(err)
+            alert(err.message || '게시글 등록 중 오류가 발생했습니다.')
+        }
     }
 
     if (!editor) return null

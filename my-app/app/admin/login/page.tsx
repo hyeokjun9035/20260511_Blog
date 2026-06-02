@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Box, Button, Card, CardContent, Stack, TextField, Typography } from "@mui/material"
 
@@ -31,6 +32,7 @@ export default function AdminLoginPage() {
 
       const data = await response.json()
       document.cookie = `token=${data.token}; path=/; max-age=3600`
+      console.log("token = " + data.token)
       router.push("/admin")
     } catch (err: any) {
       setError(err.message || "로그인 실패")
@@ -58,13 +60,10 @@ export default function AdminLoginPage() {
           <Typography variant="h4" sx={{ fontWeight: 900, mb: 1.5 }}>
             블로그 관리자 로그인
           </Typography>
-          <Typography color="text.secondary" sx={{ mb: 4, lineHeight: 1.8 }}>
-            사용자명과 비밀번호를 입력해 관리자 패널에 접근하세요. 로그인 후 관리자 대시보드로 이동합니다.
-          </Typography>
 
           <Box component="form" onSubmit={handleSubmit} sx={{ display: "grid", gap: 3 }}>
             <TextField
-              label="사용자명"
+              label="이메일"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
@@ -92,9 +91,12 @@ export default function AdminLoginPage() {
             </Button>
           </Box>
 
-          <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", mt: 4, color: "text.secondary" }}>
-            <Typography variant="body2">username / password로 로그인</Typography>
-            <Typography variant="body2">기본 관리자 페이지 스타일 적용</Typography>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mt: 4, color: "text.secondary" }}>
+            <Link href="/admin/join" style={{ textDecoration: 'none' }}>
+              <Button variant="text" size="small" sx={{ alignSelf: 'flex-start', mt: 1 }}>
+                관리자 계정 생성하기
+              </Button>
+            </Link>
           </Box>
         </CardContent>
       </Card>

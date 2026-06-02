@@ -9,12 +9,13 @@ export class PostsService {
 
   async create(createPostDto: CreatePostDto) {
     const result: any = await this.databaseService.execute(
-      'INSERT INTO posts (title, content, author, published) VALUES (?, ?, ?, ?)',
+      'INSERT INTO posts (title, contents, thumbnail, author_id, view_count, like_count, is_public, is_deleted, created_at, updated_at) VALUES (?, ?, ?, ?, 0, 0, ?, 0, NOW(), NOW())',
       [
         createPostDto.title,
-        createPostDto.content,
-        createPostDto.author ?? null,
-        createPostDto.published ?? false,
+        createPostDto.contents,
+        createPostDto.thumbnail ?? null,
+        createPostDto.author_id ?? null,
+        createPostDto.is_public ? 1 : 0,
       ],
     )
 
@@ -46,17 +47,17 @@ export class PostsService {
       fields.push('title = ?')
       params.push(updatePostDto.title)
     }
-    if (updatePostDto.content !== undefined) {
-      fields.push('content = ?')
-      params.push(updatePostDto.content)
+    if (updatePostDto.contents !== undefined) {
+      fields.push('contents = ?')
+      params.push(updatePostDto.contents)
     }
-    if (updatePostDto.author !== undefined) {
-      fields.push('author = ?')
-      params.push(updatePostDto.author)
+    if (updatePostDto.author_id !== undefined) {
+      fields.push('author_id = ?')
+      params.push(updatePostDto.author_id)
     }
-    if (updatePostDto.published !== undefined) {
-      fields.push('published = ?')
-      params.push(updatePostDto.published)
+    if (updatePostDto.is_public !== undefined) {
+      fields.push('is_public = ?')
+      params.push(updatePostDto.is_public ? 1 : 0)
     }
 
     if (fields.length === 0) {
@@ -64,8 +65,9 @@ export class PostsService {
     }
 
     params.push(id)
+    params.push(id)
     await this.databaseService.execute(
-      `UPDATE posts SET ${fields.join(', ')} WHERE id = ?`,
+      `UPDATE posts SET ${fields.join(', ')}, update_at = NOW() WHERE id = ?`,
       params,
     )
     return this.findOne(id)

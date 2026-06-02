@@ -9,6 +9,11 @@ type AdminLayoutProps = {
   children: React.ReactNode
 }
 
+const handleLogout = () => {
+  document.cookie = "token=; path=/; max-age=0"
+  window.location.href = "/admin/login"
+}
+
 export default function AdminLayout({ title = ["Admin"], children }: AdminLayoutProps) {
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f8fafc" }}>
@@ -42,7 +47,7 @@ export default function AdminLayout({ title = ["Admin"], children }: AdminLayout
           <ListItemButton component={Link} href="/admin/posts/new">
             <ListItemText primary="게시글 작성" />
           </ListItemButton>
-          <ListItemButton component={Link} href="/admin/login">
+          <ListItemButton onClick={handleLogout}>
             <ListItemText primary="로그아웃" />
           </ListItemButton>
         </List>

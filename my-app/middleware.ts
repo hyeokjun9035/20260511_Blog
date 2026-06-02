@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+// import jwt from "jsonwebtoken"
 
 export function middleware(req: NextRequest) {
     const { pathname } = req.nextUrl
@@ -10,7 +11,7 @@ export function middleware(req: NextRequest) {
     }
 
     // 로그인 페이지는 허용
-    if (pathname === "/admin/login") {
+    if (pathname === "/admin/login" || pathname === "/admin/join") {
         return NextResponse.next()
     }
 
