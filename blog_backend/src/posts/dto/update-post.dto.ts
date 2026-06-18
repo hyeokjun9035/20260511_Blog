@@ -1,4 +1,4 @@
-import { IsBoolean, IsInt, IsOptional, IsString, MaxLength } from 'class-validator'
+import { IsBoolean, IsIn, IsInt, IsOptional, IsString, MaxLength } from 'class-validator'
 
 export class UpdatePostDto {
   @IsOptional()
@@ -20,6 +20,7 @@ export class UpdatePostDto {
   author_id?: number
 
   @IsOptional()
-  @IsBoolean()
-  is_public?: boolean
+  @IsString()
+  @IsIn(['DRAFT', 'PUBLISHED', 'PRIVATE', 'DELETED'])
+  status?: 'DRAFT' | 'PUBLISHED' | 'PRIVATE' | 'DELETED'
 }

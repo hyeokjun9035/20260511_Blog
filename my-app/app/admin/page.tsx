@@ -1,10 +1,11 @@
 "use client"
+
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
   Card,
   CardContent,
-  Grid,
   Stack,
   Typography,
 } from "@mui/material";
@@ -12,6 +13,28 @@ import AdminLayout from "../../components/layout/AdminLayout";
 import Link from "next/link";
 
 export default function AdminPage() {
+  const [postCount, setPostCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    const loadPostCount = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/posts/count");
+
+        if (!response.ok) {
+          throw new Error("게시글 수를 불러오지 못했습니다.");
+        }
+
+        const count = await response.json();
+        setPostCount(Number(count));
+      } catch (error) {
+        console.error(error);
+        setPostCount(null);
+      }
+    };
+
+    loadPostCount();
+  }, []);
+
   return (
     <AdminLayout title={["관리자 전용", "콘텐츠 관리 대시보드"]}>
       <Box sx={{ display: "grid", gap: 4 }}>
@@ -54,7 +77,7 @@ export default function AdminPage() {
           {[
             {
               title: "게시글 수",
-              value: "12",
+              value: postCount === null ? "-" : String(postCount),
               description: "전체 블로그 게시물 수입니다.",
             },
             {

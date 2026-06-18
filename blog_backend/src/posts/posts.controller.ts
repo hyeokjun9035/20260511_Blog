@@ -26,6 +26,16 @@ export class PostsController {
     return this.postsService.findAll()
   }
 
+  @Get('count')
+  countAll() {
+    return this.postsService.countAll()
+  }
+
+  @Get('slug/:slug')
+  findBySlug(@Param('slug') slug: string) {
+    return this.postsService.findBySlug(slug)
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.findOne(id)
@@ -39,5 +49,15 @@ export class PostsController {
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.remove(id)
+  }
+  @Get('admin')
+  @UseGuards(AuthGuard('jwt'))
+  findAllAdmin() {
+    return this.postsService.findAllAdmin()
+  }
+
+  @Get('admin/count')
+  countAllAdmin() {
+    return this.postsService.countAllAdmin()
   }
 }

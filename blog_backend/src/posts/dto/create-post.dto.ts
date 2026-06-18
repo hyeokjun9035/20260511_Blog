@@ -1,4 +1,4 @@
-import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator'
+import { IsBoolean, IsIn, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator'
 
 export class CreatePostDto {
   @IsNotEmpty()
@@ -16,14 +16,15 @@ export class CreatePostDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(255)
+  @MaxLength(500)
   thumbnail?: string
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsInt()
-  author_id?: number
+  author_id!: number
 
   @IsOptional()
-  @IsBoolean()
-  is_public?: boolean
+  @IsString()
+  @IsIn(['DRAFT', 'PUBLISHED', 'PRIVATE', 'DELETED'])
+  status?: 'DRAFT' | 'PUBLISHED' | 'PRIVATE' | 'DELETED'
 }

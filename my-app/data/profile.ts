@@ -55,21 +55,3 @@ export const projects = [
   "프로젝트 3: Thlog",
   "프로젝트 4: 요양원 사이트",
 ];
-
-export const latestPosts = [
-  {
-    title: "Vue.js 개발 스타일 (Options vs Composition)",
-    date: "2026-05-10",
-    slug: "vue-study", // content/post/공부.md 파일명과 일치해야 함
-    category: "Vue.js"
-  }
-];
-
-export const troubleshootingPosts = [
-  {
-    title: "Oracle ORA-28001 비밀번호 만료 오류 해결 방법 (password has expired)",
-    date: "2026-05-18",
-    slug: "Oracle_ORA-28001",
-    category: "DB",
-  },
-];

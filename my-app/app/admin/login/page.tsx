@@ -52,7 +52,7 @@ export default function AdminLoginPage() {
         bgcolor: "#f8fafc",
       }}
     >
-      <Card sx={{ width: "100%", maxWidth: 520, borderRadius: 5, boxShadow: 8 }}>
+      <Card sx={{ width: "100%", maxWidth: 520, borderRadius: 1, boxShadow: 8 }}>
         <CardContent sx={{ p: { xs: 4, sm: 6 } }}>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
             관리자 전용 로그인
@@ -91,13 +91,13 @@ export default function AdminLoginPage() {
             </Button>
           </Box>
 
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mt: 4, color: "text.secondary" }}>
+          {/* <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mt: 4, color: "text.secondary" }}>
             <Link href="/admin/join" style={{ textDecoration: 'none' }}>
               <Button variant="text" size="small" sx={{ alignSelf: 'flex-start', mt: 1 }}>
                 관리자 계정 생성하기
               </Button>
             </Link>
-          </Box>
+          </Box> */}
         </CardContent>
       </Card>
     </Box>

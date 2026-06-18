@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import AdminLayout from "../../../../components/layout/AdminLayout"
@@ -38,11 +38,7 @@ import LinkIcon from "@mui/icons-material/Link"
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote"
 import TitleIcon from "@mui/icons-material/Title"
 
-const categories = ["troubleshooting", "skill"]
-const categoryMap: Record<string, number> = {
-    troubleshooting: 1,
-    skill: 2,
-}
+
 
 const fontFamilies = [
     {
@@ -105,10 +101,33 @@ const FontSize = Extension.create({
 })
 
 export default function AdminCreatePostPage() {
+
+    type Category = {
+        id: number
+        parent_id: number | null
+        name: string
+    }
     const [title, setTitle] = useState("")
-    const [category, setCategory] = useState(categories[0])
-    const [summary, setSummary] = useState("")
     const [published, setPublished] = useState(false)
+
+    const [categories, setCategories] = useState<Category[]>([])
+    const [parentCategory, setParentCategory] = useState("")
+    const [categoryId, setCategoryId] = useState<number | null>(null)
+
+    useEffect(() => {
+        fetch("http://localhost:4000/category")
+            .then(res => res.json())
+            .then(data => setCategories(data))
+    }, [])
+
+    const parentCategories =
+        categories.filter(
+            item => item.parent_id === null
+        )
+
+    const childCategories = categories.filter(
+        item => item.parent_id === Number(parentCategory)
+    )
 
     const editor = useEditor({
         immediatelyRender: false,
@@ -262,6 +281,11 @@ export default function AdminCreatePostPage() {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault()
 
+        if (!categoryId) {
+            alert("카테고리를 선택해주세요.")
+            return
+        }
+
         const content = editor?.getHTML() || ''
 
         try {
@@ -278,12 +302,14 @@ export default function AdminCreatePostPage() {
                     ...(token ? { Authorization: `Bearer ${token}` } : {}),
                 },
                 body: JSON.stringify({
-                    category_id: categoryMap[category],
+                    category_id: categoryId,
                     title,
                     contents: content,
                     thumbnail: '',
                     author_id: null,
-                    is_public: published,
+                    status: published
+                        ? 'PUBLISHED'
+                        : 'DRAFT',
                 }),
             })
 
@@ -319,21 +345,45 @@ export default function AdminCreatePostPage() {
                 {/* Title & Category */}
                 <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
                     <TextField
-                        fullWidth
+                        sx={{ width: "1000px" }}
                         label="게시글 제목"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
                     <TextField
                         select
-                        label="카테고리"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        sx={{ minWidth: 220 }}
+                        sx={{ width: "180px" }}
+                        label="대분류"
+                        value={parentCategory}
+                        onChange={(e) => {
+                            setParentCategory(e.target.value)
+                            setCategoryId(null)
+                        }}
                     >
-                        {categories.map((item) => (
-                            <MenuItem key={item} value={item}>
-                                {item}
+                        {parentCategories.map((category: Category) => (
+                            <MenuItem
+                                key={category.id}
+                                value={category.id}
+                            >
+                                {category.name}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                    <TextField
+                        select
+                        sx={{ width: "180px" }}
+                        label="소분류"
+                        value={categoryId ?? ""}
+                        onChange={(e) =>
+                            setCategoryId(Number(e.target.value))
+                        }
+                    >
+                        {childCategories.map(category => (
+                            <MenuItem
+                                key={category.id}
+                                value={category.id}
+                            >
+                                {category.name}
                             </MenuItem>
                         ))}
                     </TextField>

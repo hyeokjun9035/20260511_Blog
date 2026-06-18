@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Chip,
@@ -11,21 +11,62 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import BlogLayout from "../../components/layout/BlogLayout";
-import { skills, latestPosts } from "../../data/profile";
+import { skills } from "../../data/profile";
+
+interface Post {
+  id: number;
+  slug?: string;
+  thumbnail?: string;
+  title: string;
+  category_name?: string;
+  category_id?: number | null;
+  created_at: string;
+}
 
 export default function SkillPage() {
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
+  const [allPosts, setAllPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // 선택된 스킬에 따른 포스트 필터링
-  const filteredPosts =
-    selectedSkill === null
-      ? latestPosts
-      : latestPosts.filter((post) => post.category === selectedSkill);
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        setLoading(true);
+        const response = await fetch("http://localhost:4000/posts");
+        if (!response.ok) {
+          throw new Error("Failed to fetch posts");
+        }
+        const data = await response.json();
+        // 최신순으로 정렬
+        const sorted = data.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        setAllPosts(sorted);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
+        console.error("Error fetching posts:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPosts();
+  }, []);
+
+  // show only posts with category_id === 2 (skill posts), then filter by tech skill name
+  const skillPosts = allPosts.filter((post) => post.category_id === 2);
+
+  const filteredPosts = selectedSkill === null
+    ? skillPosts
+    : skillPosts.filter((post) => post.category_name === selectedSkill);
 
   const postCounts = skills.reduce<Record<string, number>>((acc, skill) => {
-    acc[skill] = latestPosts.filter((post) => post.category === skill).length;
+    acc[skill] = skillPosts.filter((post) => post.category_name === skill).length;
     return acc;
   }, {});
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("ko-KR");
+  };
 
   return (
     <BlogLayout title={["보유한 기술 스택과", "학습 기록을 확인하세요"]}>
@@ -41,7 +82,7 @@ export default function SkillPage() {
               textTransform: "none",
             }}
           >
-            All ({latestPosts.length})
+            All ({skillPosts.length})
           </Button>
           {skills.map((skill) => (
             <Button
@@ -62,7 +103,15 @@ export default function SkillPage() {
 
       {/* 포스트 목록 */}
       <Box>
-        {filteredPosts.length > 0 ? (
+        {loading ? (
+          <Typography variant="body1" color="text.secondary" sx={{ textAlign: "center", py: 4 }}>
+            로딩 중...
+          </Typography>
+        ) : error ? (
+          <Typography variant="body1" color="error" sx={{ textAlign: "center", py: 4 }}>
+            오류: {error}
+          </Typography>
+        ) : filteredPosts.length > 0 ? (
           <>
             <Stack direction="row" spacing={2} sx={{ alignItems: "center", mb: 3 }}>
               <Typography
@@ -95,8 +144,8 @@ export default function SkillPage() {
             <Stack spacing={2}>
               {filteredPosts.map((post) => (
                 <Link
-                  key={post.slug}
-                  href={`/post/${post.slug}`}
+                  key={post.id}
+                  href={`/post/${post.id}`}
                   style={{ textDecoration: "none" }}
                 >
                   <Button
@@ -119,14 +168,19 @@ export default function SkillPage() {
                       },
                     }}
                   >
-                    <Box sx={{ textAlign: "left", width: "100%" }}>
-                      <Typography variant="caption" sx={{ display: "block", mb: 0.5, opacity: 0.7 }}>
-                        {post.date}
-                      </Typography>
-                      <Typography sx={{ fontWeight: 700, fontSize: "1rem" }}>
-                        {post.title}
-                      </Typography>
-                    </Box>
+                        <Stack direction="row" spacing={2} sx={{ width: "100%", alignItems: "center", textAlign: "left" }}>
+                          {post.thumbnail && (
+                            <Box component="img" src={post.thumbnail} alt={post.title} sx={{ width: 120, height: 80, objectFit: "cover", borderRadius: 1 }} />
+                          )}
+                          <Box sx={{ flex: 1 }}>
+                            <Typography variant="caption" sx={{ display: "block", mb: 0.5, opacity: 0.7 }}>
+                              {formatDate(post.created_at)}
+                            </Typography>
+                            <Typography sx={{ fontWeight: 700, fontSize: "1rem" }}>
+                              {post.title}
+                            </Typography>
+                          </Box>
+                        </Stack>
                   </Button>
                 </Link>
               ))}

@@ -41,7 +41,7 @@ export default function AdminLayout({ title = ["Admin"], children }: AdminLayout
           <ListItemButton component={Link} href="/admin">
             <ListItemText primary="대시보드" />
           </ListItemButton>
-          <ListItemButton component={Link} href="/admin/posts">
+          <ListItemButton component={Link} href="/admin/management">
             <ListItemText primary="게시글 관리" />
           </ListItemButton>
           <ListItemButton component={Link} href="/admin/posts/new">

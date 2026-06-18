@@ -6,7 +6,7 @@ export default function TestPage() {
   const [post, setPost] = useState<any>(null);
 
   useEffect(() => {
-    fetch("http://localhost:4000/posts/3")
+    fetch("http://localhost:4000/posts/5")
       .then((res) => res.json())
       .then((data) => {
         console.log(data);

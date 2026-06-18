@@ -9,41 +9,94 @@ export class PostsService {
 
   async create(createPostDto: CreatePostDto) {
     const result: any = await this.databaseService.execute(
-      'INSERT INTO posts '
-      + '(category_id, title, contents, thumbnail, author_id, view_count, like_count, is_public, is_deleted, created_at, updated_at) '
-      + 'VALUES (?, ?, ?, ?, ?, 0, 0, ?, 0, NOW(), NOW())',
+      `INSERT INTO posts (
+      category_id,
+      title,
+      contents,
+      thumbnail,
+      author_id,
+      view_count,
+      like_count,
+      status,
+      created_at,
+      updated_at
+    )
+    VALUES (?, ?, ?, ?, ?, 0, 0, ?, NOW(), NOW())`,
       [
         Number(createPostDto.category_id),
         createPostDto.title,
         createPostDto.contents,
         createPostDto.thumbnail ?? null,
-        createPostDto.author_id,
-        createPostDto.is_public ? 'Y' : 'N',
+        Number(createPostDto.author_id),
+        createPostDto.status ?? 'DRAFT',
       ],
     )
 
-    const insertedId = (result as any)?.insertId
-    return this.findOne(insertedId)
+    const insertedId = result?.insertId
+
+    return this.findOneAdmin(insertedId)
   }
 
+
   findAll() {
-    return this.databaseService.query('SELECT * FROM posts ORDER BY created_at DESC')
+    return this.databaseService.query(
+      `SELECT
+        p.*,
+        CONCAT(p.id, '') AS slug,
+        c.name AS category_name
+      FROM posts p
+      LEFT JOIN categories c ON p.category_id = c.id
+      WHERE p.status = 'PUBLISHED'
+      ORDER BY p.created_at DESC`
+    )
+  }
+
+  async findAllAdmin() {
+    return this.databaseService.query(`
+    SELECT
+      p.*,
+      CONCAT(p.id, '') AS slug,
+      c.name AS category_name,
+      CASE p.status
+        WHEN 'DRAFT' THEN '임시저장'
+        WHEN 'PUBLISHED' THEN '공개'
+        WHEN 'PRIVATE' THEN '비공개'
+        WHEN 'DELETED' THEN '삭제'
+      END AS status_label
+    FROM posts p
+    LEFT JOIN categories c
+      ON p.category_id = c.id
+    ORDER BY p.created_at DESC
+  `)
+  }
+
+  async countAll() {
+    const rows: any = await this.databaseService.query(
+      'SELECT COUNT(id) AS count FROM posts WHERE status = "PUBLISHED" AND status = "PRIVATE"',
+    )
+
+    return rows[0]?.count ?? 0
+  }
+
+  async countAllAdmin() {
+    const rows: any = await this.databaseService.query(`
+    SELECT
+      COUNT(*) AS total,
+      SUM(status = 'PUBLISHED') AS published,
+      SUM(status = 'PRIVATE') AS private,
+      SUM(status = 'DRAFT') AS draft,
+      SUM(status = 'DELETED') AS deleted
+    FROM posts
+  `)
+
+    return rows[0]
   }
 
   async findOne(id: number) {
     const rows: any = await this.databaseService.query(
       `
-    SELECT
-      p.*,
-      c.name AS category_name,
-      u.nickname
-    FROM posts p
-    LEFT JOIN categories c
-      ON p.category_id = c.id
-    LEFT JOIN users u
-      ON p.author_id = u.id
-    WHERE p.id = ?
-      AND p.is_deleted = 'N'
+    SELECT p.*, CONCAT(p.id, '') AS slug, c.name AS category_name FROM posts p LEFT JOIN
+    categories c ON p.category_id = c.id WHERE p.id = ? AND p.status = 'PUBLISHED'
     `,
       [id],
     )
@@ -52,6 +105,45 @@ export class PostsService {
       throw new NotFoundException(`Post with id ${id} not found.`)
     }
     return post
+  }
+
+  async findOneAdmin(id: number) {
+    const rows: any = await this.databaseService.query(
+      `     
+      SELECT
+      p.*,
+      CONCAT(p.id, '') AS slug,
+      c.name AS category_name,
+      CASE p.status
+        WHEN 'DRAFT' THEN '임시저장'
+        WHEN 'PUBLISHED' THEN '공개'
+        WHEN 'PRIVATE' THEN '비공개'
+        WHEN 'DELETED' THEN '삭제'
+      END AS status_label
+    FROM posts p
+    LEFT JOIN categories c
+      ON p.category_id = c.id
+    WHERE p.id = ?
+    `,
+      [id],
+    )
+
+    const post = rows[0]
+
+    if (!post) {
+      throw new NotFoundException(`Post with id ${id} not found.`)
+    }
+
+    return post
+  }
+
+
+  async findBySlug(slug: string) {
+    const id = Number(slug)
+    if (!Number.isInteger(id) || id <= 0) {
+      throw new NotFoundException(`Post with slug ${slug} not found.`)
+    }
+    return this.findOne(id)
   }
 
   async update(id: number, updatePostDto: UpdatePostDto) {
@@ -70,9 +162,9 @@ export class PostsService {
       fields.push('author_id = ?')
       params.push(updatePostDto.author_id)
     }
-    if (updatePostDto.is_public !== undefined) {
-      fields.push('is_public = ?')
-      params.push(updatePostDto.is_public ? 1 : 0)
+    if (updatePostDto.status) {
+      fields.push('status = ?')
+      params.push(updatePostDto.status)
     }
 
     if (fields.length === 0) {
@@ -80,9 +172,8 @@ export class PostsService {
     }
 
     params.push(id)
-    params.push(id)
     await this.databaseService.execute(
-      `UPDATE posts SET ${fields.join(', ')}, update_at = NOW() WHERE id = ?`,
+      `UPDATE posts SET ${fields.join(', ')}, updated_at = NOW() WHERE id = ?`,
       params,
     )
     return this.findOne(id)
@@ -90,7 +181,12 @@ export class PostsService {
 
   async remove(id: number) {
     const post = await this.findOne(id)
-    await this.databaseService.execute('DELETE FROM posts WHERE id = ?', [id])
+    await this.databaseService.execute(`
+      UPDATE posts
+      SET status = 'DELETED',
+            deleted_at = NOW()
+      WHERE id = ?
+      `, [id])
     return post
   }
 }
