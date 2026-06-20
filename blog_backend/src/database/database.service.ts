@@ -9,7 +9,6 @@ export class DatabaseService implements OnModuleInit {
     console.log("DB_HOST =", process.env.DB_HOST);
     console.log("DB_PORT =", process.env.DB_PORT);
     console.log("DB_USER =", process.env.DB_USER);
-    console.log("PORT =", process.env.PORT)
     try {
       this.connection = await mysql.createConnection({
         host: process.env.DB_HOST,
