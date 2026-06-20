@@ -22,6 +22,9 @@ async function bootstrap() {
 
   const port = Number(process.env.PORT) || 4000
 
+  console.log('process.env.PORT =', process.env.PORT)
+  console.log('process.env =', Object.keys(process.env))
+
   console.log('PORT =', port)
 
   await app.listen(port, '0.0.0.0')
