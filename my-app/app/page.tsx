@@ -30,6 +30,10 @@ export default function DevBlogMain() {
 
   useEffect(() => {
     async function fetchPosts() {
+      console.log(
+        "NEXT_PUBLIC_API_URL",
+        process.env.NEXT_PUBLIC_API_URL
+      );
       try {
         setLoading(true);
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`);
