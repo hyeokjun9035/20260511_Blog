@@ -18,7 +18,7 @@ export default function AdminPage() {
   useEffect(() => {
     const loadPostCount = async () => {
       try {
-        const response = await fetch("http://localhost:4000/posts/count");
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts/count`);
 
         if (!response.ok) {
           throw new Error("게시글 수를 불러오지 못했습니다.");

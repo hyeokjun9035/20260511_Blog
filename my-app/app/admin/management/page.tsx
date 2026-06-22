@@ -38,7 +38,7 @@ type PostItem = {
 
 type VisibilityFilter = "all" | "public" | "private"
 
-const API_BASE = "http://localhost:4000"
+const API_BASE = process.env.NEXT_PUBLIC_API_URL
 
 function getCookie(name: string) {
   const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`))

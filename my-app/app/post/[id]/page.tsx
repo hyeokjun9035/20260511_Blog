@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import BlogLayout from "../../../components/layout/BlogLayout";
 import AboutSectionMenu from "../../../components/about/AboutSectionMenu";
 
-const API_BASE = process.env.BACKEND_API_URL || "http://localhost:4000"
+const API_BASE = process.env.NEXT_PUBLIC_API_URL
 
 type PostData = {
   id: number

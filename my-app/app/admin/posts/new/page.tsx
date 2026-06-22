@@ -115,7 +115,7 @@ export default function AdminCreatePostPage() {
     const [categoryId, setCategoryId] = useState<number | null>(null)
 
     useEffect(() => {
-        fetch("http://localhost:4000/category")
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/category`)
             .then(res => res.json())
             .then(data => setCategories(data))
     }, [])
@@ -185,7 +185,7 @@ export default function AdminCreatePostPage() {
 
         const response =
             await fetch(
-                "http://localhost:4000/upload/image",
+                `${process.env.NEXT_PUBLIC_API_URL}/upload/image`,
                 {
                     method: "POST",
 
@@ -295,7 +295,7 @@ export default function AdminCreatePostPage() {
             console.log("content :", content);
             console.log("typeof :", typeof content);
 
-            const res = await fetch('http://localhost:4000/posts', {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/posts`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
